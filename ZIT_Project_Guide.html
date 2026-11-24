@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>ZIT - מערכת בקרת גרסאות מבוזרת עם שיתוף אובייקטים בסגנון טורנט</title>
+<style>
+  @page {
+    size: A4;
+    margin: 18mm 16mm 18mm 16mm;
+    @bottom-center {
+      content: counter(page);
+      font-size: 10pt;
+      color: #64748b;
+    }
+  }
+
+  * {
+    box-sizing: border-box;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+    color: #1e293b;
+    line-height: 1.65;
+    background: #ffffff;
+    margin: 0;
+    padding: 0;
+    font-size: 11pt;
+  }
+
+  /* Cover Banner */
+  .cover-banner {
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
+    color: white;
+    padding: 40px 35px;
+    border-radius: 14px;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15);
+  }
+
+  .badge-tag {
+    display: inline-block;
+    background: rgba(56, 189, 248, 0.2);
+    color: #38bdf8;
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 9pt;
+    font-weight: 600;
+    margin-bottom: 15px;
+    letter-spacing: 0.5px;
+  }
+
+  .cover-title {
+    font-size: 26pt;
+    font-weight: 800;
+    margin: 0 0 10px 0;
+    line-height: 1.2;
+    color: #ffffff;
+  }
+
+  .cover-subtitle {
+    font-size: 13pt;
+    color: #cbd5e1;
+    margin: 0 0 18px 0;
+    font-weight: 400;
+    line-height: 1.4;
+  }
+
+  .cover-meta {
+    font-size: 9.5pt;
+    color: #94a3b8;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    padding-top: 12px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  h1, h2, h3, h4 {
+    color: #0f172a;
+    font-weight: 700;
+  }
+
+  h2 {
+    font-size: 16pt;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 8px;
+    margin-top: 30px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  h2 .num {
+    background: #0284c7;
+    color: white;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10pt;
+    margin-left: 8px;
+  }
+
+  h3 {
+    font-size: 12.5pt;
+    color: #1e293b;
+    margin-top: 18px;
+    margin-bottom: 8px;
+  }
+
+  p {
+    margin: 0 0 12px 0;
+    text-align: justify;
+  }
+
+  /* Cards & Callouts */
+  .card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    page-break-inside: avoid;
+  }
+
+  .analogy-box {
+    background: #eff6ff;
+    border-right: 4px solid #3b82f6;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 15px 0;
+    page-break-inside: avoid;
+  }
+
+  .analogy-title {
+    font-weight: 700;
+    color: #1d4ed8;
+    font-size: 11.5pt;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+  }
+
+  .story-box {
+    background: #faf5ff;
+    border: 1px solid #e9d5ff;
+    border-right: 4px solid #a855f7;
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin: 18px 0;
+    page-break-inside: avoid;
+  }
+
+  .story-header {
+    font-size: 13pt;
+    font-weight: 700;
+    color: #7e22ce;
+    margin-bottom: 10px;
+    border-bottom: 1px dashed #d8b4fe;
+    padding-bottom: 6px;
+  }
+
+  .highlight-quote {
+    font-size: 11.5pt;
+    font-style: italic;
+    background: #f1f5f9;
+    border-right: 3px solid #64748b;
+    padding: 10px 16px;
+    margin: 14px 0;
+    color: #334155;
+    border-radius: 0 6px 6px 0;
+  }
+
+  /* Grid Layouts */
+  .grid-2 {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+
+  .grid-2 > div {
+    flex: 1;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 10pt;
+    page-break-inside: avoid;
+  }
+
+  th, td {
+    border: 1px solid #cbd5e1;
+    padding: 9px 12px;
+    text-align: right;
+  }
+
+  th {
+    background: #f1f5f9;
+    color: #0f172a;
+    font-weight: 700;
+  }
+
+  tr:nth-child(even) td {
+    background: #f8fafc;
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 8.5pt;
+    font-weight: 600;
+  }
+  .badge-success { background: #dcfce7; color: #15803d; }
+  .badge-danger { background: #fee2e2; color: #b91c1c; }
+
+  /* Page Break Utilities */
+  .page-break {
+    page-break-before: always;
+  }
+
+  .footer-note {
+    font-size: 8.5pt;
+    color: #94a3b8;
+    text-align: center;
+    margin-top: 35px;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 12px;
+  }
+
+  ul, ol {
+    margin: 6px 0 12px 24px;
+    padding: 0;
+  }
+
+  li {
+    margin-bottom: 5px;
+  }
+</style>
+</head>
+<body>
+
+  <!-- Cover Banner -->
+  <div class="cover-banner">
+    <div class="badge-tag">מדריך הסבר מקיף • ארכיטקטורה, אנלוגיות וסיפור משתמש</div>
+    <div class="cover-title">ZIT – הדור הבא של בקרת גרסאות</div>
+    <div class="cover-subtitle">איך לחבר בין הנוחות של Git לבין העוצמה של רשתות שיתוף קבצים (BitTorrent) – מוסבר בגובה העיניים לכל אדם</div>
+    <div class="cover-meta">
+      <span><strong>מחבר:</strong> פרויקט פיתוח ZIT DevOps</span>
+      <span><strong>תאריך:</strong> נובמבר 2026</span>
+      <span><strong>גרסה:</strong> 1.0 (MVP)</span>
+    </div>
+  </div>
+
+  <!-- פרק 1 -->
+  <h2><span class="num">1</span> מה זה בכלל ZIT ולמה היינו חייבים להמציא אותו?</h2>
+  <p>
+    אם יצא לכם לעבוד בעולם הטכנולוגיה, ודאי שמעתם על <strong>Git</strong>. גיט היא הכלי הפופולרי ביותר בעולם לשמירת גרסאות של קוד. היא מאפשרת למפתחים לחזור בזמן, להשוות שינויים ולעבוד יחד בצוות.
+    אבל לגיט יש <strong>חיסרון ענקי</strong> שמתסכל חברות רבות בכל יום מחדש: <strong>היא מחייבת אתכם להוריד את הכל, תמיד, מראש!</strong>
+  </p>
+  <p>
+    תארו לעצמכם שאתם רוצים להצטרף לפרויקט של פיתוח משחק מחשב, או מודל בינה מלאכותית. הפרויקט שוקל <strong>200 ג'יגה-בייט</strong> ומכיל גרפיקה כבדה, מודלים תלת-ממדיים ומוזיקה. כל מה שאתם צריכים לעשות כרגע זה לתקן שגיאת כתיב בקובץ טקסט קטן של 2 קילו-בייט.
+    ב-Git הקלאסית, אתם נאלצים לשבת מול המסך 4 שעות, להוריד את כל 200 הג'יגה-בייט, לסתום את הדיסק הקשיח של המחשב שלכם, ורק אז להתחיל לעבוד!
+  </p>
+
+  <div class="analogy-box">
+    <div class="analogy-title">💡 אנלוגיה ראשונה: הזמנת ספרייה שלמה בשביל דף אחד</div>
+    זה בדיוק כמו שתלכו לספרייה העירונית כדי לקרוא עמוד אחד מתוך אנציקלופדיה, והספרן יגיד לכם: <em>"מצטער, הכלל אצלנו הוא שחייבים להעמיס את כל מדפי הספרייה על משאית, לפרוק אותם בסלון שלכם בבית, ורק אז מותר לכם לפתוח את הספר!"</em>
+    נשמע מגוחך? זו בדיוק הדרך שבה Git עובדת כיום.
+  </div>
+
+  <p>
+    <strong>כאן נכנסת ZIT לתמונה:</strong><br>
+    ZIT לוקחת את הרעיון של Git, אבל מחברת אותו לטכנולוגיה של <strong>טורנטים (BitTorrent)</strong>.
+    במקום להוריד את כל המאגר הכבד, ZIT מורידה רק את "תוכן העניינים" (המטא-דאטה, רשימת הקבצים וההיסטוריה). הקבצים הכבדים עצמם יורדים <strong>אך ורק לפי דרישה (Lazy Checkout)</strong>, ורק עבור התיקיות שבאמת מעניינות אתכם (<strong>Sparse Checkout</strong>).
+    יתרה מכך: הקבצים יורדים ישירות מהמחשבים של החברים שלכם לצוות שיושבים לידכם, בלי להעמיס על שרת מרכזי!
+  </p>
+
+  <!-- פרק 2 -->
+  <h2><span class="num">2</span> אנלוגיות פשוטות מהחיים – להבין את הרעיון ב-2 דקות</h2>
+
+  <div class="grid-2">
+    <div>
+      <h3 style="color: #0369a1; margin-top: 0;">📦 1. קטלוג איקאה מול מחסן ענק</h3>
+      <p style="font-size: 10pt;">
+        ב-Git הרגילה, כשאתם אומרים "אני רוצה להסתכל על קטלוג איקאה", איקאה שולחת לכם הביתה את כל הרהיטים שבחנות וממלאת לכם את הדירה.<br><br>
+        ב-<strong>ZIT</strong>, אתם מקבלים חוברת דקה (הקטלוג). אתם מדפדפים, ורק כשאתם בוחרים שולחן ספציפי – רק הוא מגיע אליכם הביתה.
+      </p>
+    </div>
+    <div>
+      <h3 style="color: #0369a1; margin-top: 0;">🎬 2. צפייה ישירה (נטפליקס) מול הורדת האינטרנט</h3>
+      <p style="font-size: 10pt;">
+        האם בשביל לצפות בפרק אחד של סדרה בנטפליקס הייתם מוכנים להוריד מראש את כל הסרטים והסדרות שיצאו אי פעם בהיסטוריה?<br><br>
+        ZIT מתנהגת כמו נטפליקס: רואים את רשימת כל התכנים מיד, אבל מורידים לזיכרון רק את מה שמשמיעים כרגע.
+      </p>
+    </div>
+  </div>
+
+  <div class="analogy-box" style="border-right-color: #10b981; background: #f0fdf4;">
+    <div class="analogy-title" style="color: #047857;">🤝 3. אנלוגיית שיעורי הבית בכיתה (שיתוף עמיתים - Swarming)</div>
+    <p style="margin: 0; font-size: 10.5pt; color: #166534;">
+      במודל הישן, יש מורה אחד (שרת מרכזי). אם 50 תלמידים בכיתה רוצים לצלם דף עבודה באותו זמן, נוצר תור ענק במכונת הצילום והכל קורס.<br>
+      ב-<strong>ZIT</strong>, ברגע שתלמיד אחד צילם את הדף, החברים לידו מצלמים ממנו! תוך שניות בודדות כל הכיתה מחזיקה בדף, בלי שהמורה היה צריך להדפיס 50 עותקים.
+    </p>
+  </div>
+
+  <!-- פרק 3 -->
+  <div class="page-break"></div>
+  <h2><span class="num">3</span> איך הקסם עובד מתחת למכסה המנוע? (בלי מילים מסובכות)</h2>
+  <p>
+    המערכת מורכבת משלושה גורמים פשוטים שמשתפים פעולה בהרמוניה:
+  </p>
+
+  <div class="card">
+    <h3 style="margin-top: 0; color: #0284c7;">1. ה-CLI (הממשק של המשתמש)</h3>
+    פקודות פשוטות בשורת הפקודה שכל מפתח כבר מכיר: <code>zit init</code>, <code>zit add</code>, <code>zit commit</code>, <code>zit checkout</code>. המשתמש עובד בדיוק כמו ב-Git רגיל, בלי להרגיש שמאחורי הקלעים מתרחש מדע בדיוני.
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top: 0; color: #0284c7;">2. הטראקר (The Tracker - השדכן / המרכזייה)</h3>
+    שרת קטן, קל וזריז. הוא <strong>לא שומר אף קובץ כבד</strong>! כל תפקידו בעולם הוא להחזיק "ספר טלפונים":
+    <ul>
+      <li>איזה מחשב בצוות מחזיק כרגע איזה קובץ?</li>
+      <li>מהי הגרסה העדכנית ביותר של הפרויקט?</li>
+    </ul>
+    הטראקר יודע לכוון אתכם תוך אלפית שנייה: <em>"רוצה את קובץ הגרפיקה? הוא נמצא כרגע אצל דני ואצל מיה, תוריד ממי שקרוב אליך!"</em>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top: 0; color: #0284c7;">3. שרת העמיתים (Peer Server)</h3>
+    בכל מחשב שבו מותקן ZIT, פועל ברקע שרת זעיר (<code>zit serve</code>). ברגע שהורדתם קובץ למחשב שלכם, אתם הופכים אוטומטית ל"תחנת שידור" (Seeder). אם חבר מהצוות צריך את הקובץ הזה, המחשב שלכם מעביר לו אותו במהירות שיא של הרשת המקדית במשרד.
+  </div>
+
+  <h3>איך מוודאים שאף אחד לא מרמה או מקלקל קבצים? (אבטחה ואימות)</h3>
+  <div class="grid-2">
+    <div>
+      <strong>🔒 תעודת זהות מתמטית (SHA-256):</strong><br>
+      לכל קובץ יש טביעת אצבע ייחודית שאי אפשר לזייף. כשמחשב אחר שולח לכם קובץ, ZIT מחשבת את טביעת האצבע שלו. אם חסרה אפילו אות אחת, המערכת זורקת את הקובץ לפח ומורידה ממישהו אחר. לעולם לא סומכים על אף עמית בעיניים עצומות.
+    </div>
+    <div>
+      <strong>✍️ חתימה דיגיטלית של מנהל הפרויקט (Ed25519):</strong><br>
+      רק בעל הפרויקט מחזיק במפתח הצפנה פרטי שמאפשר לו לקבוע מהי הגרסה הרשמית (main branch). אף אדם זר ברשת לא יכול לפרסם עדכון מזויף.
+    </div>
+  </div>
+
+  <!-- פרק 4 -->
+  <h2><span class="num">4</span> למי זה מיועד? דוגמאות מוחשיות מהחיים האמיתיים</h2>
+
+  <div class="card">
+    <h3 style="margin-top: 0;">🎮 אולפני משחקים (Game Development)</h3>
+    במשחק מחשב יש קבצי קוד קלים, אך גם קבצי וידאו, מוזיקה ודגמי תלת-ממד בנפח של מאות ג'יגה-בייט.
+    <strong>במצב הקיים:</strong> מתכנת שרק רוצה לשנות את מהירות הקפיצה של הדמות מחכה חצי יום עד שכל המודלים הגרפיים ירדו למחשב שלו.<br>
+    <strong>עם ZIT:</strong> המתכנת עושה Checkout רק לתיקיית הקוד (<code>zit checkout main -- src/</code>) ומתחיל לעבוד תוך <strong>3 שניות</strong>!
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top: 0;">🤖 מודלים של בינה מלאכותית (AI & Machine Learning)</h3>
+    חברות AI מחזיקות קובצי משקולות של מודלים (Weights) שכל אחד מהם שוקל 10 עד 50 ג'יגה. עם ZIT, מדען הנתונים יכול לראות את כל היסטוריית הניסויים והאימונים, אך להוריד לדיסק המקומי רק את המודל המנצח שהוא בודק כרגע.
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top: 0;">🏢 פרויקטי ענק בארגונים (Monorepo)</h3>
+    בארגונים גדולים (כמו גוגל או מטא), כל הקוד של כל החברה יושב במאגר אחד ענקי. אף עובד לא צריך את כל החברה על המחשב הנייד שלו. ZIT מאפשרת לכל צוות לקבל רק את הפרוסה הקטנה שלו בעוגה.
+  </div>
+
+  <!-- פרק 5 -->
+  <div class="page-break"></div>
+  <h2><span class="num">5</span> יום בחיי צוות: הסיפור המלא של מיה, דן ועומר</h2>
+  <p>
+    כדי לראות איך כל החלקים מתחברים למציאות חיה, בואו נצטרף לבוקר שגרתי בסטארטאפ הגיימינג <em>"PixelCraft"</em>.
+  </p>
+
+  <div class="story-box">
+    <div class="story-header">☕ השעה 09:00 – היום הראשון של מיה בעבודה</div>
+    <p>
+      מיה היא מעצבת ממשק משתמש (UI Designer) מוכשרת, והיום הוא יומה הראשון בחברה. המחשב החדש שלה ריק לחלוטין.
+      המאגר של המשחק שוקל <strong>180 ג'יגה-בייט</strong>. בעבודה הקודמת שלה, יום כזה היה נשרף על המתנה של שעות ארוכות עד שכל המאגר יסתיים לרדת, תוך שהאינטרנט במשרד זוחל לכולם.
+    </p>
+    <p>
+      דן, ראש הצוות, ניגש אליה ומחייך: <em>"מיה, אצלנו משתמשים ב-ZIT. תפתחי טרמינל ותרשמי:"</em>
+    </p>
+    <pre style="background: #1e1b4b; color: #38bdf8; padding: 10px; border-radius: 6px; font-size: 9pt; direction: ltr; text-align: left;">
+zit clone http://tracker.pixelcraft.local:9000 game-repo</pre>
+    <p>
+      מיה לוחצת Enter. <strong>תוך 1.8 שניות</strong> מופיעה ההודעה:
+      <br><span style="color: #16a34a; font-weight: 700;">✔ Cloning completed successfully! Commits: 450, Trees: 120, Blobs downloaded: 0.</span>
+    </p>
+    <p>
+      מיה נדהמת: <em>"מה?! זה הוריד 180 ג'יגה בשנייה אחת?!"</em><br>
+      דן צוחק: <em>"לא, זה הוריד רק את המפה וההיסטוריה. המחשב שלך עדיין פנוי לגמרי. באיזו תיקייה את הולכת לעבוד היום?"</em><br>
+      <em>"רק על האייקונים של התפריט, בתיקיית <code>ui/icons/</code>"</em>, היא עונה.<br>
+      <em>"מצוין. תכתבי <code>zit checkout main -- ui/icons/</code>."</em>
+    </p>
+    <p>
+      תוך 3 שניות נוספות, ה-CLI מושך אך ורק את 15 מגה-בייט של האייקונים ישירות מהמחשב של דן שיושב בשולחן לידה דרך הרשת המקומית, במהירות שיא של רשת משרדית. מיה מוכנה לעבודה ב-09:05!
+    </p>
+
+    <div class="story-header" style="margin-top: 15px;">🔨 השעה 11:30 – השינוי של דן ופיזור העומסים</div>
+    <p>
+      דן עובד על מנוע הפיזיקה של המשחק. הוא מתקן באג בחישוב כוח המשיכה ומוסיף צליל התרסקות חדש. הוא מריץ:
+    </p>
+    <pre style="background: #1e1b4b; color: #38bdf8; padding: 10px; border-radius: 6px; font-size: 9pt; direction: ltr; text-align: left;">
+zit add src/physics.go assets/crash.wav
+zit commit -m "Fix gravity calculation and add crash sound"
+zit publish</pre>
+    <p>
+      באותו רגע, ה-Tracker המרכזי מקבל הודעה חתומה: יש גרסה חדשה, והמחשב של דן מחזיק את צליל ההתרסקות החדש.
+    </p>
+
+    <div class="story-header" style="margin-top: 15px;">⚡ השעה 14:00 – אפקט הטורנט נכנס לפעולה</div>
+    <p>
+      עומר, מהנדס הסאונד, חוזר מארוחת הצהריים. הוא עושה <code>zit fetch</code> ורואה את העדכון של דן.
+      הוא רוצה לבדוק את צליל ההתרסקות, אז הוא עושה <code>zit checkout main -- assets/crash.wav</code>.
+      הקובץ יורד תוך שבריר שנייה מהמחשב של דן ישירות למחשב של עומר.
+    </p>
+    <p>
+      עכשיו מגיע הקסם: <strong>דן מכבה את המחשב שלו ויוצא לרופא שיניים.</strong><br>
+      עשר דקות לאחר מכן, מיה מחליטה שגם היא רוצה להאזין לצליל ההתרסקות החדש. האם היא נתקעת כי המחשב של דן כבוי?
+      <strong>ממש לא!</strong> ה-Tracker יודע שגם עומר כבר הוריד את הקובץ. המחשב של מיה מוריד את הצליל <strong>ישירות מהמחשב של עומר!</strong><br>
+      העומס מתפזר, המערכת שורדת נפילות, והמשרד לא תלוי באף שרת מרכזי יקר ומסורבל.
+    </p>
+  </div>
+
+  <!-- פרק 6 -->
+  <h2><span class="num">6</span> השוואה ראש בראש: Git קלאסית מול ZIT</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>תכונה</th>
+        <th>Git רגיל (GitHub / GitLab)</th>
+        <th>ZIT (טורנט מבוזר)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>זמן שכפול מאגר (Clone) של 200GB</strong></td>
+        <td>שעתיים עד 6 שעות <span class="status-badge badge-danger">איטי מאוד</span></td>
+        <td><strong>פחות מ-2 שניות!</strong> <span class="status-badge badge-success">מיידי</span></td>
+      </tr>
+      <tr>
+        <td><strong>צריכת מקום בדיסק הקשיח</strong></td>
+        <td>200GB (כל הקבצים מכל ההיסטוריה)</td>
+        <td><strong>רק הקבצים שבחרתם לעבוד עליהם</strong></td>
+      </tr>
+      <tr>
+        <td><strong>עומס על השרת המרכזי</strong></td>
+        <td>ענקי – השרת חייב לשלוח את כל המידע לכולם</td>
+        <td><strong>אפסי</strong> – העמיתים מעבירים קבצים בינם לבין עצמם</td>
+      </tr>
+      <tr>
+        <td><strong>הורדה במקביל (Multi-Peer)</strong></td>
+        <td>לא נתמך (חיבור יחיד מול שרת יחיד)</td>
+        <td><strong>נתמך מובנה (Worker Pool של 8 ערוצים מקבילים)</strong></td>
+      </tr>
+      <tr>
+        <td><strong>עבודה במצב Sparse (חלקי)</strong></td>
+        <td>מסורבלת ביותר, דורשת הגדרות עמוקות</td>
+        <td><strong>טבעית ומובנית כדרך פעולה ברירת-מחדל</strong></td>
+      </tr>
+      <tr>
+        <td><strong>אבטחה ואימות תוכן</strong></td>
+        <td>SHA-1 / SHA-256</td>
+        <td><strong>SHA-256 לכל אובייקט + חתימות Ed25519 לענפים</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- סיכום -->
+  <div class="card" style="background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%); border: 1px solid #bae6fd; margin-top: 25px;">
+    <h3 style="margin-top: 0; color: #0369a1;">🎯 השורה התחתונה</h3>
+    <p style="margin: 0;">
+      <strong>ZIT פותרת את אחת מנקודות התורפה הגדולות ביותר של פיתוח תוכנה מודרני.</strong>
+      היא מעניקה למפתחים וליוצרים את מלוא החופש, האמינות וההיסטוריה המוכרת של Git, לצד מהירות בזק וחיסכון חסר תקדים בנפח אחסון וברוחב פס.
+      הטכנולוגיה מחזירה את הכוח לקהילת העמיתים, והופכת כל חבר צוות לחלק מרשת שיתוף חכמה, בטוחה ויעילה.
+    </p>
+  </div>
+
+  <div class="footer-note">
+    מסמך זה הופק באופן אוטומטי על ידי פרויקט ZIT • כל הזכויות שמורות לפרויקט DevOps ZIT 2026
+  </div>
+
+</body>
+</html>
